@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minesweeper</title>
+    <link rel="icon" href="bomba.png">
+    <style>
+        *{
+            font-family: Arial;
+        }
+
+        .square{
+            background-color: #bbbbbb;
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            border: solid black 2px;
+        }
+        .square:hover{
+            background-color: gray;
+            scale: 0.95;
+        }
+        #jogo{
+            margin: 0;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            -ms-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+            border: 2px solid black;
+        }
+    </style>
+</head>
+<body id="body" onload="iniciar()">
+
+<div class="square" style="display: none;" id="placeholder" onclick="clicked(this)" oncontextmenu="flag(this)"> </div>
+<div id="jogoplaceholder" style="font-size: 0;"></div>
+<div id="linhaplaceholder" style="display: flex;"></div>
+
+</body>
+<script>
+    var podeusarocoisa = false
+    var xvalues = []
+    var yvalues = []
+    var grid = []
+    var gridflags = []
+    var squareclicked = null
+    var clicks = -1
+
+    //Configurações aí
+    const lines = 16 
+    const rows = 16
+    const safechar = " "
+    const bombchar = "💣"
+    const flagchar = "🚩"
+    const bombs = Math.ceil((lines*rows)/5)
+    
+    function iniciar(){    
+    var bombsplaced = 0
+    grid = []
+    gridflags = []
+    xvalues = []
+    yvalues = []
+
+    for (let i = 0; i < lines*rows; i++){
+        grid.push(safechar)
+        gridflags.push(safechar)
+    }
+
+    do{
+        randomthingfromgrid = Math.floor(Math.random() * grid.length)
+
+        if (grid[randomthingfromgrid] == safechar){
+            grid[randomthingfromgrid] = bombchar
+            gridflags[randomthingfromgrid] = bombchar
+            bombsplaced += 1
+        }
+        if (squareclicked != null){
+            if (grid[squareclicked] == bombchar){
+                grid[squareclicked] = safechar
+                do{ randomthingfromgrid = Math.floor(Math.random() * grid.length)
+                if (grid[randomthingfromgrid] == safechar){
+                    grid[randomthingfromgrid] = bombchar
+                    gridflags[randomthingfromgrid] = bombchar
+                }
+                }while (grid[randomthingfromgrid] != bombchar)
+            }
+        }
+    }while(bombsplaced<bombs)
+    if (document.getElementById("jogo")!= null){
+        document.getElementById("jogo").remove()
+    }
+        var linhaAtual = 1
+        var clonejogo = document.getElementById("jogoplaceholder").cloneNode()
+        clonejogo.id = "jogo"
+        document.getElementById("body").appendChild(clonejogo)
+
+        var clonelinha = document.getElementById("linhaplaceholder").cloneNode()
+        clonelinha.id = "linha1"
+        document.getElementById("jogo").appendChild(clonelinha)
+        for (let i = 0; i < grid.length; i++){
+        if ((i/rows) % 1 == 0){
+            if (i != 0){
+                linhaAtual += 1
+                var clonelinha = document.getElementById("linha1").cloneNode(false)
+                clonelinha.id = "linha"+linhaAtual
+                document.getElementById("jogo").appendChild(clonelinha)
+            }
+        }
+        xvalues.push(i%rows)
+        yvalues.push(linhaAtual-1)
+        var clone = document.getElementById("placeholder").cloneNode(true)
+        clone.id = i
+        
+        clone.style.display = "block"
+        clone.innerHTML = grid[i]
+        document.getElementById("linha"+linhaAtual).appendChild(clone)
+    }
+    if (clicks > -1){
+            podeusarocoisa = true
+            revelarquadrados()
+        }
+    }
+    
+    function clicked(event){
+        clicks += 1
+        squareclicked = event.id
+        if (event.innerHTML != flagchar){
+            revelarquadrados()
+        }
+        if (clicks == 0){
+            iniciar()
+        }
+    }
+
+    function revelarquadrados(){
+        if (podeusarocoisa == true){
+            document.getElementById(squareclicked).style.fontSize = "25px"
+            if (grid[squareclicked] == bombchar){
+                document.getElementById("jogo").style.fontSize = "25px"
+                setTimeout(reiniciarjogo, 10)
+            }
+            if (grid[squareclicked] == safechar){
+                document.getElementById(squareclicked).style.backgroundColor = "#eeebeb"
+            }
+        }
+        numero()
+    }
+
+    function numero(){
+        if (grid[squareclicked] == safechar){
+        var xvalue = xvalues[squareclicked]
+        var yvalue = yvalues[squareclicked]
+        var number = 0
+        var next = Number(squareclicked) + 1
+        var prev = Number(squareclicked) - 1
+        var above = Number(squareclicked) - rows
+        var below = Number(squareclicked) + rows
+        console.log(grid)
+        console.log(xvalues)
+        console.log(yvalues)
+        console.log(squareclicked)
+        if (xvalue != rows-1){
+            if (grid[next] == bombchar){
+                console.log("bomb in ->")
+                number += 1
+            }
+        }
+        if (xvalue != 0){
+            if (grid[prev] == bombchar){
+                console.log("bomb in <-")
+                number += 1
+            }
+        }
+        if (yvalues[above] != null){
+            if (grid[above] == bombchar){
+                console.log("bomb in ^")
+                number += 1
+            }
+        }
+        if (yvalues[below] != null){
+            if (grid[below] == bombchar){
+                console.log("bomb in v")
+                number += 1
+            }
+        }
+
+
+
+        if (xvalue != rows-1 && grid[below] != null){
+            if (grid[next+rows] == bombchar){
+                console.log("bomb in ↘")
+                number += 1
+            }
+        }
+        if (xvalue != 0 && grid[below] != null){
+            if (grid[prev+rows] == bombchar){
+                console.log("bomb in ↙")
+                number += 1
+            }
+        }
+        if (xvalue != rows-1 && yvalues[above] != null){
+            if (grid[above+1] == bombchar){
+                console.log("bomb in ↗")
+                number += 1
+            }
+        }
+        if (xvalue != 0 && yvalues[above] != null){
+            if (grid[above-1] == bombchar){
+                console.log("bomb in ↖")
+                number += 1
+            }
+        }
+
+
+
+        if (number != 0){
+            document.getElementById(squareclicked).innerHTML = number
+        }
+        }
+    }
+
+    function flag(event){
+        if (clicks > -1){
+            if (gridflags[event.id] != flagchar){
+                if (event.style.backgroundColor != "rgb(238, 235, 235)"){
+                    event.style.fontSize = "25px"
+                    gridflags[event.id] = flagchar
+                    event.innerHTML = flagchar
+                }
+            }else{
+                event.style.fontSize = "0px"
+                event.innerHTML = grid[event.id]
+                gridflags[event.id] = grid[event.id]
+            }
+        }
+    }
+    
+
+    function reiniciarjogo(){
+        window.alert("você perdeu!!!!! !! !   ! ! ! ")
+        clicks = -1
+        podeusarocoisa = false
+        squareclicked = null
+        clicks = -1
+        iniciar()
+    }
+</script>
+
+</body>
+</html>
