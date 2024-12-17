@@ -37,7 +37,8 @@
 <div class="square" style="display: none;" id="placeholder" onclick="clicked(this)" oncontextmenu="flag(this)"> </div>
 <div id="jogoplaceholder" style="font-size: 0;"></div>
 <div id="linhaplaceholder" style="display: flex;"></div>
-<button style="right: 0; margin-right: 20px; position: absolute;">Customizar</button>
+<button style="right: 0; margin-right: 20px; position: absolute;">Customize</button>
+<p id="info" style="position: absolute; right: 0; bottom: 0; margin-right: 20px;"></p>
 </body>
 <script>
     var podeusarocoisa = false
@@ -55,6 +56,11 @@
     const bombchar = "💣"
     const flagchar = "🚩"
     const bombs = Math.ceil((lines*rows)/5)
+
+    document.getElementById("info").innerHTML = 
+    "<strong>Width</strong>: "+rows+"<br>"+
+    "<strong>Height</strong>: "+lines+"<br>"+
+    "<strong>Bombs</strong>: "+bombs+"<br>"
     
     function iniciar(){    
     var bombsplaced = 0
@@ -139,7 +145,14 @@
             document.getElementById(squareclicked).style.fontSize = "25px"
             if (grid[squareclicked] == bombchar){
                 document.getElementById("jogo").style.fontSize = "25px"
-                
+                for (let i = 0; i < grid.length; i++){
+                    if (grid[i] == bombchar){
+                        document.getElementById(i).style.backgroundColor = "#555555"
+                    }
+                    if (gridflags[i] == flagchar && grid[i] == safechar){
+                        document.getElementById(i).style.backgroundColor = "lightcoral"
+                    }
+                }
                 setTimeout(reiniciarjogo, 10)
             }
             if (grid[squareclicked] == safechar){
