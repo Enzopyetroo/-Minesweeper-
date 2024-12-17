@@ -37,7 +37,7 @@
 <div class="square" style="display: none;" id="placeholder" onclick="clicked(this)" oncontextmenu="flag(this)"> </div>
 <div id="jogoplaceholder" style="font-size: 0;"></div>
 <div id="linhaplaceholder" style="display: flex;"></div>
-
+<button style="right: 0; margin-right: 20px; position: absolute;">Customizar</button>
 </body>
 <script>
     var podeusarocoisa = false
@@ -139,6 +139,7 @@
             document.getElementById(squareclicked).style.fontSize = "25px"
             if (grid[squareclicked] == bombchar){
                 document.getElementById("jogo").style.fontSize = "25px"
+                
                 setTimeout(reiniciarjogo, 10)
             }
             if (grid[squareclicked] == safechar){
@@ -214,9 +215,33 @@
         }
 
 
-
+        var quadrado = document.getElementById(squareclicked).style
         if (number != 0){
             document.getElementById(squareclicked).innerHTML = number
+            if (number == 1){
+                quadrado.color = "blue"
+            }
+            if (number == 2){
+                quadrado.color = "green"
+            }
+            if (number == 3){
+                quadrado.color = "red"
+            }
+            if (number == 4){
+                quadrado.color = "darkblue"
+            }
+            if (number == 5){
+                quadrado.color = "darkred"
+            }
+            if (number == 6){
+                quadrado.color = "cadetblue"
+            }
+            if (number == 7){
+                quadrado.color = "black"
+            }
+            if (number == 8){
+                quadrado.color = "gray"
+            }
         }
         }
     }
