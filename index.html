@@ -39,6 +39,14 @@
 <div id="linhaplaceholder" style="display: flex;"></div>
 <button style="right: 0; margin-right: 20px; position: absolute;">Customize</button>
 <p id="info" style="position: absolute; right: 0; bottom: 0; margin-right: 20px;"></p>
+<p style="margin-left: 20px; right: 0;">Width:</p>
+<input type="range" min="1" max="100" value="50" id="widthslider" oninput="displayval(this)">
+<p id="widthsliderval"></p>
+<p style="margin-left: 20px; right: 0;">Height:</p>
+<input type="range" min="1" max="100" value="50" id="heightslider" oninput="displayval(this)">
+<p id="heightsliderval"></p>
+<button onclick="reiniciarjogo()">restart</button>
+
 </body>
 <script>
     var podeusarocoisa = false
@@ -50,12 +58,12 @@
     var clicks = -1
 
     //Configurações aí
-    const lines = 16 
-    const rows = 16
-    const safechar = " "
-    const bombchar = "💣"
-    const flagchar = "🚩"
-    const bombs = Math.ceil((lines*rows)/5)
+    var lines = 16 
+    var rows = 16
+    var safechar = " "
+    var bombchar = "💣"
+    var flagchar = "🚩"
+    var bombs = Math.ceil((lines*rows)/5)
 
     document.getElementById("info").innerHTML = 
     "<strong>Width</strong>: "+rows+"<br>"+
@@ -283,6 +291,21 @@
         squareclicked = null
         clicks = -1
         iniciar()
+    }
+
+    function displayval(event){
+        if (event.id == "widthslider"){
+            document.getElementById("widthsliderval").innerHTML = event.value
+            rows = event.value
+        }
+        if (event.id == "heightslider"){
+            document.getElementById("heightsliderval").innerHTML = event.value
+            lines = event.value
+        }
+        document.getElementById("info").innerHTML = 
+        "<strong>Width</strong>: "+rows+"<br>"+
+        "<strong>Height</strong>: "+lines+"<br>"+
+        "<strong>Bombs</strong>: "+bombs+"<br>"
     }
 </script>
 
